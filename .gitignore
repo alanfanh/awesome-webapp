@@ -1,1 +1,14 @@
+
+# MacOs
 www/.DS_Store
+.DS_Store
+
+
+# python
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+__pycache__/
+
+# My configuration
