@@ -14,8 +14,8 @@ class User(Model):
     email = StringField(ddl='varchar(50)')
     name = StringField(ddl='varchar(50)')
     admin = BooleanField()
-    passwd = StringField()
-    image = StringField()
+    passwd = StringField(ddl='varchar(50)')
+    image = StringField(ddl='varchar(500)')
     created_at = FloatField(default=time.time)
 
 
@@ -39,6 +39,6 @@ class Comment(Model):
     blog_id = StringField(ddl='varchar(50)')
     user_id = StringField(ddl='varchar(50)')
     user_name = StringField(ddl='varchar(50)')
-    user_image = StringField(DDL='varchar(50)')
+    user_image = StringField(DDL='varchar(500)')
     content = TextFiled()
-    created_at = StringField(time.time)
+    created_at = StringField(default=time.time)
