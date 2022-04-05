@@ -19,7 +19,7 @@ async def create_pool(loop, **kwargs):
         user=kwargs['user'],
         password=kwargs['password'],
         db=kwargs['db'],
-        charset=kwargs.get('charset', 'utf-8'),
+        charset=kwargs.get('charset', 'utf8'),
         autocommit=kwargs.get('autocommit', True),
         maxsize=kwargs.get('maxsize', 10),
         minsize=kwargs.get('minsize', 1),
@@ -131,7 +131,7 @@ class ModelMetaclass(type):
         escaped_fields = list(map(lambda f: '`%s`' % f, fields))
         attrs['__mappings__'] = mappings
         attrs['__table__'] = tableName
-        attrs['__primaryKey__'] = primaryKey
+        attrs['__primary_key__'] = primaryKey
         attrs['__fields__'] = fields
 
         attrs['__select__'] = "select `%s`,%s from `%s`" % (
