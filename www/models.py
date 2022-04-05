@@ -39,6 +39,6 @@ class Comment(Model):
     blog_id = StringField(ddl='varchar(50)')
     user_id = StringField(ddl='varchar(50)')
     user_name = StringField(ddl='varchar(50)')
-    user_image = StringField(DDL='varchar(500)')
+    user_image = StringField(ddl='varchar(500)')
     content = TextFiled()
     created_at = StringField(default=time.time)
