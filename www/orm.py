@@ -19,7 +19,7 @@ async def create_pool(loop, **kwargs):
         user=kwargs['user'],
         password=kwargs['password'],
         db=kwargs['db'],
-        charset=kwargs.get('charset', 'utf-8'),
+        charset=kwargs.get('charset', 'utf8'),
         autocommit=kwargs.get('autocommit', True),
         maxsize=kwargs.get('maxsize', 10),
         minsize=kwargs.get('minsize', 1),
@@ -106,14 +106,14 @@ class TextFiled(Field):
 
 class ModelMetaclass(type):
     def __new__(cls, name, bases, attrs):
-        if name == Model:
+        if name == 'Model':
             return type.__new__(cls, name, bases, attrs)
         tableName = attrs.get('__table__', None) or name
         logging.info('found model:%s (table:%s)' % (name, tableName))
         mappings = dict()
         fields = []
         primaryKey = None
-        for k, v in attrs.itmes():
+        for k, v in attrs.items():
             if isinstance(v, Field):
                 logging.info('found mapping:%s==>%s' % (k, v))
                 mappings[k] = v
@@ -131,7 +131,7 @@ class ModelMetaclass(type):
         escaped_fields = list(map(lambda f: '`%s`' % f, fields))
         attrs['__mappings__'] = mappings
         attrs['__table__'] = tableName
-        attrs['__primaryKey__'] = primaryKey
+        attrs['__primary_key__'] = primaryKey
         attrs['__fields__'] = fields
 
         attrs['__select__'] = "select `%s`,%s from `%s`" % (
