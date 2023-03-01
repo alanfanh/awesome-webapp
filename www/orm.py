@@ -1,7 +1,6 @@
 # 异步orm框架
 # encoding=utf-8
 import aiomysql
-import asyncio
 import logging
 
 
@@ -17,7 +16,7 @@ async def create_pool(loop, **kwargs):
         port=kwargs.get('port', 3306),
         user=kwargs['user'],
         password=kwargs['password'],
-        db=kwargs['db'],
+        db=kwargs['database'],
         charset=kwargs.get('charset', 'utf8'),
         autocommit=kwargs.get('autocommit', True),
         maxsize=kwargs.get('maxsize', 10),
