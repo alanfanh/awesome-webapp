@@ -26,6 +26,7 @@ python3.9.6 64bit
 aiohttp==3.8.3
 jinja2==3.1.2
 aiomysql==0.1.1
+markdown==3.4.1
 ````
 
 ### 数据库
