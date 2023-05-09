@@ -221,7 +221,7 @@ async def api_delete_comment(id, request):
 
 
 @get('/api/users')
-def api_get_user(*, page="1"):
+async def api_get_user(*, page="1"):
     # 获取用户信息API
     page_index = get_page_index(page)
     num = await User.findNumber('count(id)')
@@ -240,7 +240,7 @@ _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
 # 用户注册API
-@post('api/users')
+@post('/api/users')
 async def api_register_user(*, email, name, passwd):
     if not name or not name.strip():
         raise APIValueError('name')
@@ -282,3 +282,67 @@ async def api_blogs(*, page='1'):
 async def api_get_blog(*, pk):
     blog = await Blog.find(pk)
     return blog
+
+
+# 发表日志API
+@post('/api/blogs')
+async def api_create_blog(request, *, name, summary, content):
+    check_admin(request)
+    if not name or not name.strip():
+        raise APIValueError('name', 'name cannot be empty.')
+    if not summary or not summary.strip():
+        raise APIValueError('summary', 'summary cannot be empty.')
+    if not content or not content.strip():
+        raise APIValueError('content', 'content cannot be empty.')
+    blog = Blog(user_id=request.__user__.id, user_name=request.__user__.name, user_image=request.__user__image,
+                name=name.strip(), summary=summary.strip(), content=content.strip())
+    await blog.save()
+    return blog
+
+
+# 编辑日志API
+@post('/api/blogs/{id}')
+async def api_update_blog(id, request, *, name, summary, content):
+    check_admin(request)
+    blog = await Blog.find(id)
+    if not name or not name.strip():
+        raise APIValueError('name', 'name cannot be empty.')
+    if not summary or not summary.strip():
+        raise APIValueError('summary', 'summary cannot be empty.')
+    if not content or not content.strip():
+        raise APIValueError('content', 'content cannot be empty.')
+    blog.name = name.strip()
+    blog.summary = summary.strip()
+    blog.content = content.strip()
+    await blog.update()
+    return blog
+
+
+# 删除日志API
+@post('/api/blogs/{id}/delete')
+async def api_delete_blog(request, *, id):
+    check_admin(request)
+    blog = await Blog.find(id)
+    await blog.remove()
+    return dict(id=id)
+
+
+# 删除用户API
+@post('/api/users/{id}/delete')
+async def api_delete_user(request, *, id):
+    check_admin(request)
+    id_buff = id
+    user = await User.find(id)
+    if user is None:
+        raise APIResourceNotFoundError('comment')
+    await user.remove()
+    # 给被删除的用户在评论中标记
+    comments = await Comment.findAll('user_id=?', [id])
+    if comments:
+        for comment in comments:
+            id = comment.id
+            c = await Comment.find(id)
+            c.user_name = c.user_name + '(该用户已被删除)'
+            await c.update()
+    id = id_buff
+    return dict(id=id)
